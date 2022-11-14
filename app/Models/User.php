@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use \Request;
 use \Auth;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class User extends Authenticatable
 {
     use Notifiable;
     use SoftDeletes;
+    use HasFactory;
     protected $dates = ['deleted_at'];
 
     /**
