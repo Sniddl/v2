@@ -112,16 +112,20 @@ $('.post-block').click(function() {
 window.Tunnel = class Tunnel {
   constructor(params) {
     this.socket = io.connect(params.host);
+    console.log(params, this.socket)
+    this.channel = 'laravel_database_' + params.channel;
   }
 
   public(params){
-    this.socket.on(params.channel + ':App\\Events\\'+params.event, function(data){
+    this.channel = 'laravel_database_' + params.channel;
+    this.socket.on(this.channel + ':App\\Events\\'+params.event, function(data){
       params.success(data);
     });
   }
 
   private(params){
-    this.socket.on("private-"+params.channel + "." + params.unique + ':App\\Events\\'+params.event, function(data){
+    this.channel = 'laravel_database_' + params.channel;
+    this.socket.on("private-"+this.channel + "." + params.unique + ':App\\Events\\'+params.event, function(data){
       params.success(data);
     });
   }

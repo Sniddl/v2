@@ -57,7 +57,7 @@
                 {{ csrf_field() }}
           </form>
       @else
-          @if (!\App\Friend::where('being_followed_id','=',$post->user_id)->where('follower_id','=',Auth::user()->id)->exists())
+          @if (!\App\Models\Friend::where('being_followed_id','=',$post->user_id)->where('follower_id','=',Auth::user()->id)->exists())
               <a class="dropdown-item" href="/friend/{{$post->user_id}}">Follow User</a>
           @else
               <a class="dropdown-item" href="/friend/{{$post->user_id}}">Unfollow User</a>
