@@ -6,7 +6,6 @@ use App\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\User;
 
 class Timeline extends Model
 {
@@ -16,7 +15,7 @@ class Timeline extends Model
 
     public function post()
     {
-        return $this->belongsTo('App\Post');
+        return $this->belongsTo(Post::class);
     }
 
     public function AddedBy() {

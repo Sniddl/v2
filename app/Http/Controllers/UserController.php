@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\User;
-use App\Friend;
-use App\Repost;
-use App\Upload;
-use App\Timeline;
+use App\Models\User;
+use App\Models\Friend;
+use App\Models\Repost;
+use App\Models\Upload;
+use App\Models\Timeline;
 use App\Http\Controllers\Auth\AuthController;
 
 use Auth;

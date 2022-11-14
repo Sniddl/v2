@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Community;
-use App\User;
+use App\Models\Community;
+use App\Models\User;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Requests;       //use App\Http\Requests;
 use Illuminate\Http\Request; //use Illuminate\Http\Request;

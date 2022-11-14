@@ -3,38 +3,46 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use App\Http\Requests;
 use App\Events\CreatedPost;
+use App\Http\Controllers\CommunityController;
+use App\Http\Controllers\DeletionContoller;
+use App\Http\Controllers\FriendController;
+use App\Http\Controllers\LiveController;
+use App\Http\Controllers\notificationController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ReplyController;
+use App\Http\Controllers\UserController;
 use App\Notifications\ReplyOnPost;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
   MISC ROUTES
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯*/
-Auth::routes();
+require __DIR__.'/auth.php';
 
 
 /*⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
   Routes that need to be changed to post requests.
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯*/
-Route::get('/friend/{id}', 'FriendController@add');
+Route::get('/friend/{id}', [FriendController::class, 'add']);
 
 /*⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
   POST ROUTES -- use for forms, or if you want to keep things private.
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯*/
-Route::post('/create-post', 'PostController@create');
-Route::post('/create-reply', 'ReplyController@create');
-Route::post('/edit/profile/avatar', 'UserController@update_avatar');
-Route::post('/edit/profile/banner', 'UserController@update_banner');
-//Route::post('/edit/profile/avatargen', 'UserController@generateAvatar');
-Route::post('/delete/{item}/{id}', 'DeletionContoller@delete');
-Route::post('/create/c', 'CommunityController@createCommunity');
-Route::post('/like/{post}', 'PostController@like');
-Route::post('/repost/{post}', 'PostController@repost')->name('repost');
-Route::post('/post-feed', 'LiveController@post');
-Route::post('/profileSettings', 'UserController@profileSettings');
-Route::post('/toggleDarkness', 'UserController@toggleDarkness');
-Route::post('/delete-account', 'UserController@DeleteAcc');
-Route::post('/join_community', 'CommunityController@Join');
+Route::post('/create-post', [PostController::class, 'create']);
+Route::post('/create-reply', [ReplyController::class, 'create']);
+Route::post('/edit/profile/avatar', [UserController::class, 'update_avatar']);
+Route::post('/edit/profile/banner', [UserController::class, 'update_banner']);
+//Route::post('/edit/profile/avatargen', [UserController::class, 'generateAvatar']);
+Route::post('/delete/{item}/{id}', [DeletionContoller::class, 'delete']);
+Route::post('/create/c', [CommunityController::class, 'createCommunity']);
+Route::post('/like/{post}', [PostController::class, 'like']);
+Route::post('/repost/{post}', [PostController::class, 'repost'])->name('repost');
+Route::post('/post-feed', [LiveController::class, 'post']);
+Route::post('/profileSettings', [UserController::class, 'profileSettings']);
+Route::post('/toggleDarkness', [UserController::class, 'toggleDarkness']);
+Route::post('/delete-account', [UserController::class, 'DeleteAcc']);
+Route::post('/join_community', [CommunityController::class, 'Join']);
 
 
 
@@ -42,19 +50,19 @@ Route::post('/join_community', 'CommunityController@Join');
   GET ROUTES -- Only use if you want everyone to have access to this.
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯*/
 Route::get('/', [PostController::class, 'get']);
-Route::get('/u/{user}', 'UserController@getProfile');
-Route::get('/sort/{type}', 'PostController@sort');
-Route::get('/u/{user}/{list}', 'UserController@getProfile');
+Route::get('/u/{user}', [UserController::class, 'getProfile']);
+Route::get('/sort/{type}', [PostController::class, 'sort']);
+Route::get('/u/{user}/{list}', [UserController::class, 'getProfile']);
 //Route::get('/deactivate', 'UserController@deactivate');
-Route::get('/verify/{username}/{code}', 'UserController@verify');
-Route::get('/c/{url}', 'CommunityController@getCommunity');
-Route::get('/communities', 'CommunityController@getList');
-Route::get('/post/{timeline_id}', 'PostController@url');
+Route::get('/verify/{username}/{code}', [UserController::class, 'verify']);
+Route::get('/c/{url}', [CommunityController::class, 'getCommunity']);
+Route::get('/communities', [CommunityController::class, 'getList']);
+Route::get('/post/{timeline_id}', [PostController::class, 'url']);
 
 Route::get('/test', function () {
     return view('testphp');
 });
-Route::get('/notifications', 'notificationController@each');
+Route::get('/notifications', [notificationController::class, 'each']);
 
 
 

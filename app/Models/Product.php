@@ -9,7 +9,7 @@ class Product extends Model
 {
     public function likes()
     {
-        return $this->morphToMany('App\User', 'likeable')->whereDeletedAt(null);
+        return $this->morphToMany(User::class, 'likeable')->whereDeletedAt(null);
     }
 
     public function getIsLikedAttribute()

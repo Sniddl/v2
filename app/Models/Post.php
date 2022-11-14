@@ -13,17 +13,17 @@ class Post extends Model
 
     public function likes()
     {
-        return $this->hasMany('App\Like');
+        return $this->hasMany(Like::class);
     }
 
     public function reposts()
     {
-        return $this->hasMany('App\Repost');
+        return $this->hasMany(Repost::class);
     }
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(User::class);
     }
 
     public function Replies(){

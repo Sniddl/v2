@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Friend;
 use Auth;
-use App\User;
+use App\Models\User;
 
 class FriendController extends Controller
 {
