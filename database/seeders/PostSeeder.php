@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Community;
 use App\Models\Post;
 use App\Models\Timeline;
 use App\Models\User;
@@ -20,10 +21,13 @@ class PostSeeder extends Seeder
     public function run()
     {
         $userCount = User::count();
+        $communityCount = Community::count();
         for ($i=0; $i < 100; $i++) {
             $userId =  fake()->numberBetween(1, $userCount);
+            $communityId = fake()->numberBetween(1, $communityCount);
             $post = Post::create($this->newModel(PostFactory::class, [
                 'user_id' => $userId,
+                'community_id' => $communityId,
             ]));
             Timeline::create($this->newModel(TimelineFactory::class, [
                 'post_id' => $post->id,
