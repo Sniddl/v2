@@ -1,6 +1,7 @@
 <?php
 // My common functions
 
+use App\Models\User;
 
 function generateHex($hash = null)
 {
@@ -52,13 +53,13 @@ function parse_post($target)
                 case '@':
                     $user = User::where('username', '=', $substr)->first();
                     if ($user) {
-                        $target = str_replace_first($match, "<a href='/u/$substr'>@".$user->display_name.'</a>', $target);
+                        $target = str($target)->replace($match, "<a href='/u/{$substr}'>@{$user->username}</a>")->value();
                     }
                     break;
                 case '+':
                     $community = 'community will go here eventually';
                     if ($community) {
-                        $target = str_replace_first($match, "<a href='/c/$substr'>+".$substr.'</a>', $target);
+                        $target = str($target)->replace($match, "<a href='/c/{$substr}'>+{$substr}</a>")->value();
                     }
                     break;
 
