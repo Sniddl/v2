@@ -9,7 +9,10 @@ const timeline = computed(() => usePage().props.value.timeline)
 </script>
 
 <template>
-    <div class="grid grid-cols-1 gap-y-3 mx-auto max-w-[60ch] divide-y divide-gray-200 border border-gray-200 rounded">
-        <Post v-for="entry in timeline" :text="entry.post.text" />
+    <div class="grid grid-cols-1 mx-auto max-w-[60ch] divide-y divide-gray-200 border border-gray-200 rounded">
+        <Post v-for="entry in timeline"
+            v-bind="entry.post"
+            :is_repost="entry.is_repost"
+            :user="entry.user" />
     </div>
 </template>
