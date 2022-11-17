@@ -1,14 +1,30 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
+import vue from '@vitejs/plugin-vue';
+import * as dotenv from 'dotenv'
+
+dotenv.config()
+
+console.log(process.env['APP_URL'])
 
 export default defineConfig({
     plugins: [
         laravel({
-            input: [
-                'resources/css/app.css',
-                'resources/js/app.js',
-            ],
+            input: 'resources/js/app.js',
+            ssr: 'resources/js/ssr.js',
             refresh: true,
+            valetTls: process.env['APP_URL'].split('//').pop()
+        }),
+        vue({
+            template: {
+                transformAssetUrls: {
+                    base: null,
+                    includeAbsolute: false,
+                },
+            },
         }),
     ],
+    ssr: {
+        noExternal: ['@inertiajs/server'],
+    },
 });

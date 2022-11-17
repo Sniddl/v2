@@ -16,6 +16,7 @@ use Auth;
 use App\Events\CreatedPost;
 use App\Events\NotificationUpdate;
 use App\Notifications\TimelineEvent;
+use Inertia\Inertia;
 
 class PostController extends Controller
 {
@@ -65,8 +66,13 @@ class PostController extends Controller
 
 
     public function get(){
-        $timeline = Timeline::orderBy('id', 'DESC')->where('is_reply','=', 0)->get();
-        return view('showAllPosts', compact('timeline'));}
+        $timeline = Timeline::with(['user', 'post.op'])
+            ->orderBy('id', 'DESC')
+            ->where('is_reply', false)
+            ->get();
+        return Inertia::render('Timeline/Index', compact('timeline'));
+        return view('showAllPosts', compact('timeline'));
+    }
 
 
 

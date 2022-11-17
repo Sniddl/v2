@@ -19,7 +19,7 @@ class Timeline extends Model
         return $this->belongsTo(Post::class);
     }
 
-    public function AddedBy() {
-      return User::find($this->added_by);
+    public function user() {
+      return $this->belongsTo(User::class, 'added_by');
     }
 }

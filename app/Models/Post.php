@@ -11,7 +11,8 @@ class Post extends Model
     use SoftDeletes;
     use HasFactory;
 
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at', 'created_at'];
+    protected $appends = ['date'];
 
 
     public function likes()
@@ -24,7 +25,7 @@ class Post extends Model
         return $this->hasMany(Repost::class);
     }
 
-    public function user()
+    public function op()
     {
         return $this->belongsTo(User::class);
     }
@@ -45,5 +46,8 @@ class Post extends Model
     }
 
 
+    public function getDateAttribute() {
+        return $this->created_at->diffForHumans();
+    }
 
 }
