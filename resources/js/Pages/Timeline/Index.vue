@@ -1,7 +1,8 @@
 <script setup>
 import { computed } from 'vue'
 import { usePage } from '@inertiajs/inertia-vue3';
-import Post from '@/Components/Timeline/Post.vue'
+import Timeline from '@/Components/Timeline/Timeline.vue';
+import StickyColumn from '@/Components/Grid/StickyColumn.vue';
 
 
 const timeline = computed(() => usePage().props.value.timeline)
@@ -9,10 +10,19 @@ const timeline = computed(() => usePage().props.value.timeline)
 </script>
 
 <template>
-    <div class="grid grid-cols-1 mx-auto max-w-[60ch] divide-y divide-gray-200 border border-gray-200 rounded">
-        <Post v-for="entry in timeline"
-            v-bind="entry.post"
-            :is_repost="entry.is_repost"
-            :user="entry.user" />
+    <div class="flex relative divide-x divide-gray-200">
+        <StickyColumn>
+            <h1 class="w-full border-b border-gray-200 p-3 sticky top-0 bg-white font-bold">Profile</h1>
+        </StickyColumn>
+
+        <div class="md:max-w-[60ch]">
+            <h1 class="w-full border-b border-gray-200 p-3 sticky top-0 bg-white font-bold">Home</h1>
+            <Timeline :timeline="timeline"/>
+        </div>
+
+        <StickyColumn>
+            <h1 class="w-full border-b border-gray-200 p-3 sticky top-0 bg-white font-bold">Communities</h1>
+        </StickyColumn>
     </div>
+
 </template>

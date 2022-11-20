@@ -1,16 +1,16 @@
 @if($timeline->is_repost)
   <div class="reposted-post">
     <i class="fa fa-retweet"></i>
-    <a href="/u/{{$timeline->AddedBy()->username}}">{{$timeline->AddedBy()->display_name}} reposted...</a>
+    <a href="/u/{{$timeline->user->username}}">{{$timeline->user->display_name}} reposted...</a>
   </div>
 @endif
 
 <div class=" card-item">
-  <a href="/u/{{ $post->User->username }}">
-    <img class="avatar" height="50px" width="50px" style ="margin-right:10px; background-color:{{$post->User->avatar_bg_color}};" src="{{ $post->User->avatar_url }}"/>
+  <a href="/u/{{ $post->op->username }}">
+    <img class="avatar" height="50px" width="50px" style ="margin-right:10px; background-color:{{$post->op->avatar_bg_color}};" src="{{ $post->op->avatar_url }}"/>
   </a>
-  <a href="/u/{{ $post->User->username }}" class="post-name">{{ $post->User->display_name }}</a>
-  <small class="text-muted post-username">{{'@'.$post->User->username}}</small>
+  <a href="/u/{{ $post->op->username }}" class="post-name">{{ $post->op->display_name }}</a>
+  <small class="text-muted post-username">{{'@'.$post->op->username}}</small>
   <small class="text-muted pull-right post-time">{{ $post->created_at->diffForHumans() }}</small>
 </div>
 <div class="card-text card-item">
@@ -47,7 +47,7 @@
     <i class="fa fa-ellipsis-h post-settings" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
     <div class="dropdown-menu drop-right" aria-labelledby="dropdownMenuButton">
       <span class="dropdown-item" data-toggle="modal" data-target="#getPostUrl" data-url-to-post="{{url('/post/'.$timeline->id)}}" >Copy Post Url</span>
-      @if (Auth::user()->id == $post->user_id)
+      @if (Auth::user()->id == $post->op_id)
           <span class="dropdown-item" style="cursor:pointer;"
                 onclick="event.preventDefault();
                          document.getElementById('delete-form').submit();">
@@ -57,10 +57,10 @@
                 {{ csrf_field() }}
           </form>
       @else
-          @if (!\App\Models\Friend::where('being_followed_id','=',$post->user_id)->where('follower_id','=',Auth::user()->id)->exists())
-              <a class="dropdown-item" href="/friend/{{$post->user_id}}">Follow User</a>
+          @if (!\App\Models\Friend::where('being_followed_id','=',$post->op_id)->where('follower_id','=',Auth::user()->id)->exists())
+              <a class="dropdown-item" href="/friend/{{$post->op_id}}">Follow User</a>
           @else
-              <a class="dropdown-item" href="/friend/{{$post->user_id}}">Unfollow User</a>
+              <a class="dropdown-item" href="/friend/{{$post->op_id}}">Unfollow User</a>
           @endif
       @endif
     </div>
