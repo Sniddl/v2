@@ -6,9 +6,14 @@
     } from '@heroicons/vue/24/outline/index'
 
     import confetti from 'canvas-confetti';
-import { provide } from 'vue';
-import ByLine from './ByLine.vue';
-import PostContent from './PostContent.vue';
+    import { computed, provide } from 'vue';
+    import ByLine from './ByLine.vue';
+    import PostContent from './PostContent.vue';
+    import debounce from 'lodash/debounce';
+
+    const emit = defineEmits([
+        'liked'
+    ])
 
     const post = defineProps({
         'text': {
@@ -30,14 +35,23 @@ import PostContent from './PostContent.vue';
         'is_repost': {
             type: Boolean,
             default: false,
+        },
+        'like': {
+            type: Object,
+            default: null
         }
     })
 
     provide('post', post);
 
-    const like = (e) => {
+
+    const animateLike = e => {
         const {top, right, left, bottom} = e.target.getBoundingClientRect();
-        console.log({right, left}, (left + right) / 2)
+
+        e.target.classList.toggle('liked')
+
+        if (e.target.classList.contains('invoked')) return;
+
         confetti({
             spread: 60,
             particleCount: 10,
@@ -58,12 +72,24 @@ import PostContent from './PostContent.vue';
             shapes: ['square', 'circle', 'star'],
             disableForReducedMotion: true
         })
+
+        e.target.classList.add('invoked')
+    }
+
+    const emitLike = debounce(() => {
+        emit('liked')
+    }, 200)
+
+    const like = (e) => {
+        e.target.blur();
+        animateLike(e);
+        emitLike();
     }
 
 </script>
 
 <template>
-    <div class="w-full bg-white space-y-3 p-3 pb-1">
+    <div class="post-wrapper">
 
 
         <div v-if="post.is_repost">
@@ -73,7 +99,7 @@ import PostContent from './PostContent.vue';
             </div>
         </div>
 
-        <div :class="{'p-3 border border-gray-100 shadow shadow-gray-100 hover:bg-gray-100 hover:border-gray-200 rounded cursor-pointer': post.is_repost}">
+        <div :class="{'repost-wrapper': post.is_repost}">
             <PostContent />
         </div>
 
@@ -85,13 +111,13 @@ import PostContent from './PostContent.vue';
             <div class="text-slate-400">{{ post.date }}</div>
 
             <div class="flex items-center space-x-2 justify-end">
-                <button class="action-button hover:bg-sky-50 hover:stroke-sky-600 focus:fill-sky-500 focus:stroke-sky-700">
+                <button class="action-button hover:bg-sky-100 hover:stroke-sky-600 focus:fill-sky-500 focus:stroke-sky-700">
                     <ChatBubbleLeftRightIcon class="w-5"/>
                 </button>
-                <button class="action-button hover:bg-emerald-50 hover:stroke-emerald-600 focus:stroke-emerald-600">
+                <button class="action-button hover:bg-emerald-100 hover:stroke-emerald-600 focus:stroke-emerald-600">
                     <ArrowPathRoundedSquareIcon class="w-5"/>
                 </button>
-                <button @click.prevent="like" class="action-button hover:bg-rose-50 hover:stroke-rose-600 focus:fill-rose-600 focus:stroke-rose-600">
+                <button @click.prevent="like" :class="['action-button like', {'liked invoked': post.like}]">
                     <HeartIcon class="w-5"/>
                 </button>
             </div>
@@ -108,5 +134,26 @@ import PostContent from './PostContent.vue';
     .action-button svg,
     .action-button svg>path {
         @apply stroke-inherit fill-inherit pointer-events-none
+    }
+
+    .like {
+        @apply hover:bg-rose-100 hover:stroke-rose-600
+    }
+
+    .like:focus,
+    .liked {
+        @apply fill-rose-600 stroke-rose-600
+    }
+
+    .post-wrapper {
+        @apply w-full bg-white space-y-3 p-3 pb-1 hover:bg-gray-50 cursor-pointer
+    }
+
+    .repost-wrapper {
+        @apply p-3 border border-gray-100 hover:bg-gray-100 rounded cursor-pointer
+    }
+
+    .post-wrapper:hover .repost-wrapper {
+        @apply border-gray-200 hover:border-gray-200
     }
 </style>

@@ -12,11 +12,11 @@ use App\Models\Friend;
 use App\Models\Timeline;
 use App\Models\Reply;
 use DB;
-use Auth;
 use App\Events\CreatedPost;
 use App\Events\NotificationUpdate;
 use App\Models\Community;
 use App\Notifications\TimelineEvent;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class PostController extends Controller
@@ -68,7 +68,7 @@ class PostController extends Controller
 
     public function get(){
         $communities = Community::limit(10)->get();
-        $timeline = Timeline::with(['user', 'post.op'])
+        $timeline = Timeline::with(['user', 'post.op', 'authLike'])
             ->orderBy('id', 'DESC')
             ->where('is_reply', false)
             ->get();
@@ -78,18 +78,22 @@ class PostController extends Controller
 
 
 
-    public function like(Request $request){
-        $post = Post::find($request->id);
-        $currentLikes = $post->likes()->where('user_id', '=', Auth::user()->id);
-        if ($currentLikes->exists()) {
-            $currentLikes->delete();
+    public function like(Timeline $timeline) {
+
+        $liked = $timeline->authLike()->exists();
+
+        if (!$liked) {
+            $timeline->likes()->firstOrCreate([
+                'user_id' => Auth::id(),
+            ]);
         } else {
-            $like = new Like;
-            $like->post_id = $post->id;
-            $like->user_id = Auth::user()->id;
-            $like->save();}
+            $timeline->authLike->delete();
+        }
+
         return response()->json([
-            'likeAmount' => $post->likes->count()]);}
+            'liked' => !$liked,
+        ]);
+    }
 
 
 

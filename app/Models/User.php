@@ -66,4 +66,7 @@ class User extends Authenticatable
       return Community::where('owner_id','=',$this->id);
     }
 
+    public function likes() {
+        return $this->hasMany(Like::class);
+    }
 }//end of class

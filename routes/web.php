@@ -43,7 +43,7 @@ Route::post('/edit/profile/banner', [UserController::class, 'update_banner']);
 //Route::post('/edit/profile/avatargen', [UserController::class, 'generateAvatar']);
 Route::post('/delete/{item}/{id}', [DeletionContoller::class, 'delete']);
 Route::post('/create/c', [CommunityController::class, 'createCommunity']);
-Route::post('/like/{post}', [PostController::class, 'like']);
+Route::post('/like/{timeline}', [PostController::class, 'like'])->name('like');
 Route::post('/repost/{post}', [PostController::class, 'repost'])->name('repost');
 Route::post('/post-feed', [LiveController::class, 'post']);
 Route::post('/profileSettings', [UserController::class, 'profileSettings']);

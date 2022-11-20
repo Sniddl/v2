@@ -8,6 +8,10 @@ const props = defineProps({
     }
 })
 
+const toggleLike = timeline => {
+    axios.post(route('like', {timeline}))
+}
+
 </script>
 
 <template>
@@ -15,6 +19,9 @@ const props = defineProps({
         <Post v-for="entry in props.timeline"
             v-bind="entry.post"
             :is_repost="entry.is_repost"
-            :user="entry.user" />
+            :user="entry.user"
+            :like="entry.auth_like"
+            @liked="toggleLike(entry)"
+            />
     </div>
 </template>
