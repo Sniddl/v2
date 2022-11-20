@@ -15,6 +15,7 @@ use DB;
 use Auth;
 use App\Events\CreatedPost;
 use App\Events\NotificationUpdate;
+use App\Models\Community;
 use App\Notifications\TimelineEvent;
 use Inertia\Inertia;
 
@@ -66,11 +67,12 @@ class PostController extends Controller
 
 
     public function get(){
+        $communities = Community::limit(10)->get();
         $timeline = Timeline::with(['user', 'post.op'])
             ->orderBy('id', 'DESC')
             ->where('is_reply', false)
             ->get();
-        return Inertia::render('Timeline/Index', compact('timeline'));
+        return Inertia::render('Timeline/Index', compact('timeline', 'communities'));
         return view('showAllPosts', compact('timeline'));
     }
 

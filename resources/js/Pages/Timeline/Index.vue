@@ -6,6 +6,7 @@ import StickyColumn from '@/Components/Grid/StickyColumn.vue';
 
 
 const timeline = computed(() => usePage().props.value.timeline)
+const communities = computed(() => usePage().props.value.communities)
 
 </script>
 
@@ -22,6 +23,12 @@ const timeline = computed(() => usePage().props.value.timeline)
 
         <StickyColumn>
             <h1 class="w-full border-b border-gray-200 p-3 sticky top-0 bg-white font-bold">Communities</h1>
+            <ul class="divide-y divide-gray-200">
+                <a :href="`/c/${community.url}`" class="block px-3 py-1 hover:bg-gray-100 cursor-pointer" v-for="community in communities">
+                    <div class="font-bold">{{ community.name }}</div>
+                    <div class="text-[0.85em]">{{ community.url }}</div>
+                </a>
+            </ul>
         </StickyColumn>
     </div>
 
