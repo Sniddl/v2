@@ -10,6 +10,7 @@
     import ByLine from './ByLine.vue';
     import PostContent from './PostContent.vue';
     import debounce from 'lodash/debounce';
+    import CreatePostModal from '@/Components/Modals/CreatePostModal.vue';
 
     const emit = defineEmits([
         'liked'
@@ -111,9 +112,17 @@
             <div class="text-slate-400">{{ post.date }}</div>
 
             <div class="flex items-center space-x-2 justify-end">
-                <button class="action-button hover:bg-sky-100 hover:stroke-sky-600 focus:fill-sky-500 focus:stroke-sky-700">
-                    <ChatBubbleLeftRightIcon class="w-5"/>
-                </button>
+                <CreatePostModal>
+                    <template #title>
+                        Create Reply
+                    </template>
+                    <template #trigger="{setIsOpen}">
+                        <button @click="setIsOpen(true)" class="action-button hover:bg-sky-100 hover:stroke-sky-600 focus:fill-sky-500 focus:stroke-sky-700">
+                            <ChatBubbleLeftRightIcon class="w-5"/>
+                        </button>
+                    </template>
+                </CreatePostModal>
+
                 <button class="action-button hover:bg-emerald-100 hover:stroke-emerald-600 focus:stroke-emerald-600">
                     <ArrowPathRoundedSquareIcon class="w-5"/>
                 </button>
